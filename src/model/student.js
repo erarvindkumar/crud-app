@@ -22,8 +22,12 @@ const StudentSchema = mongoose.Schema({
         required: true,
         min: 10
     },
+    img: {
+        type: String
+    }
 }, {
     timestamps: true
 });
 
 module.exports = mongoose.model('Student', StudentSchema);
+

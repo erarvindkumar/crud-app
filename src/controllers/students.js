@@ -1,4 +1,7 @@
-const Student = require('../model/student.js');
+const Student = require('../model/student');
+
+const path = require('path');
+const fs  = require('fs');
 
 // Retrieve and return all students from the database.
 exports.findAll = (req, res) => {
@@ -13,18 +16,21 @@ exports.findAll = (req, res) => {
 };
 
 // Create and Save a new students
-exports.create = (req, res) => {
+exports.create =  (req, res , next) => {
+  
   // Validate request
   if(!req.body) {
     return res.status(400).send({
       message: "Please fill all required field"
+      
     });
   }
   // Create a new students
   const student = new Student({
     name: req.body.name,
     email: req.body.email,
-    phone: req.body.phone
+    phone: req.body.phone,
+    img: req.files[0].filename,  //update this
   });
   // Save student in the database
   student.save()
@@ -71,7 +77,8 @@ exports.update = (req, res) => {
   Student.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     email: req.body.email,
-    phone: req.body.phone
+    phone: req.body.phone,
+    img: req.files[0].filename,
   }, {new: true})
   .then(student => {
     if(!student) {
@@ -102,6 +109,7 @@ exports.delete = (req, res) => {
         message: "student not found with id " + req.params.id
       });
     }
+    fs.unlinkSync('uploads/'+ student.img);
     res.send({message: "student deleted successfully!"});
   }).catch(err => {
     if(err.kind === 'ObjectId' || err.name === 'NotFound') {
