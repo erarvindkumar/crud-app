@@ -23,11 +23,11 @@ require('./config/db.config.js');
 const studentRoutes = require('./src/routes/students.js')
 const adminRoutes = require('./src/routes/admins.js');
 
+const Admin = require('./src/model/admin.js');
 
 // using as middleware
 app.use('/api', studentRoutes);
 app.use('/api', adminRoutes);
-
 // define a root/default route
 app.post("/api/login", (req, res) => {
   if (!req.body.email) {
