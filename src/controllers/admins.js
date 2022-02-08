@@ -24,7 +24,7 @@ exports.create = (req, res) => {
   const admin = new Admin({
     name: req.body.name,
     email: req.body.email,
-    phone: req.body.phone
+    password: req.body.password
   });
   // Save admin in the database
   admin.save()

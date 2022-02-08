@@ -17,11 +17,10 @@ const AdminSchema = mongoose.Schema({
             }
         }
     },
-    phone: {
-        type: Number,
-        required: true,
-        min: 10
-    },
+    password: {
+        type: String,
+        required: true
+      }
 }, {
     timestamps: true
 });

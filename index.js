@@ -33,9 +33,9 @@ app.post("/api/login", (req, res) => {
   if (!req.body.email) {
     return res.status(401).json({ message: 'Authentication failed. Admin email required.' });
   }
-  // if(!req.body.password){
-  //   return res.status(401).json({ message: 'Authentication failed. Admin password required.' });
-  // }
+  if(!req.body.password){
+    return res.status(401).json({ message: 'Authentication failed. Admin password required.' });
+ }
   Admin.find({ email: req.body.email })
     .then(admin => {
       if (!admin) {
@@ -43,11 +43,11 @@ app.post("/api/login", (req, res) => {
           message: "Authentication failed. Admin not found."
         });
       }
-      // if(admin.password !== req.body.password){
-      //   return res.status(404).send({
-      //     message: "Authentication failed. Wrong password."
-      //   });
-      // }
+      if(admin.password == req.body.password){
+       return res.status(404).send({
+         message: "Authentication failed. Wrong password."
+       });
+     }
       admin = admin[0];
       const token = jwt.sign({ data: admin._id }, SECRET, { expiresIn: 60 * 10 });
       res.json({ success: true, token: token });
