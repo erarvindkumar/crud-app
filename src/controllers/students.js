@@ -25,12 +25,13 @@ exports.create =  (req, res , next) => {
       
     });
   }
+  const uploadedFiles = req.files.map((x) => { return x.filename });
   // Create a new students
   const student = new Student({
     name: req.body.name,
     email: req.body.email,
     phone: req.body.phone,
-    img: req.files[0].filename,  //update this
+    img: uploadedFiles,  //update this
   });
   // Save student in the database
   student.save()
@@ -67,27 +68,28 @@ exports.findOne = (req, res) => {
 
 // Update a student identified by the id in the request
 exports.update = (req, res) => {
-  // Validate Request
-  if(!req.body) {
-    return res.status(400).send({
-      message: "Please fill all required field"
-    });
-  }
   // Find student and update it with the request body
   Student.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     email: req.body.email,
-    phone: req.body.phone,
-    img: req.files[0].filename,
+    phone: req.body.phone
   }, {new: true})
   .then(student => {
+    if(student.img && student.img.length > 0){
+      student.img.map((file) => { 
+        fs.unlinkSync('./uploads/' + file);
+      });
+    }
     if(!student) {
       return res.status(404).send({
         message: "student not found with id " + req.params.id
       });
     }
+    const uploadedFiles = req.files.map((x) => { return x.filename });
+    student.img = uploadedFiles;
+
     res.send(student);
-  }).catch(err => {
+  }).catch((err) => {
     if(err.kind === 'ObjectId') {
       return res.status(404).send({
         message: "student not found with id " + req.params.id
@@ -109,16 +111,19 @@ exports.delete = (req, res) => {
         message: "student not found with id " + req.params.id
       });
     }
-    fs.unlinkSync('uploads/'+ student.img);
+    student.img.map((file)=>{
+      fs.unlinkSync('./uploads/' + file);
+    });
     res.send({message: "student deleted successfully!"});
-  }).catch(err => {
+  }).catch((err) => {
+    console.log(err);
     if(err.kind === 'ObjectId' || err.name === 'NotFound') {
       return res.status(404).send({
         message: "student not found with id " + req.params.id
       });
     }
     return res.status(500).send({
-      message: "Could not delete user with id " + req.params.id
+      message: "Could not delete student with id " + req.params.id
     });
   });
 };

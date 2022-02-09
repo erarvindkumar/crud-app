@@ -22,9 +22,7 @@ const StudentSchema = mongoose.Schema({
         required: true,
         min: 10
     },
-    img: {
-        type: String
-    }
+    img: []
 }, {
     timestamps: true
 });
