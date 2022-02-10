@@ -49,7 +49,7 @@ app.post("/api/login", (req, res) => {
        });
      }
       admin = admin[0];
-      const token = jwt.sign({ data: admin._id }, SECRET, { expiresIn: 60 * 10 });
+      const token = jwt.sign({ data: admin._id }, SECRET, { expiresIn: 100 * 50 });
       res.json({ success: true, token: token });
     }).catch(err => {
       console.log(err);

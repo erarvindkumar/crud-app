@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs')
 
 const AdminSchema = mongoose.Schema({
     name : {
@@ -21,8 +22,14 @@ const AdminSchema = mongoose.Schema({
         type: String,
         required: true
       }
-}, {
-    timestamps: true
+})
+
+AdminSchema.pre('save', async function(next) {
+    if(this.isModified('password')){
+        this.password = await bcrypt.hash(this.password, 5);
+    }
+    next();
 });
+
 
 module.exports = mongoose.model('Admin', AdminSchema);
