@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require("cors");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 
@@ -11,7 +12,9 @@ const SECRET = "ruiu565";
 const port = process.env.PORT || 4000;
 
 // parse requests of content-type - application/x-www-form-urlencoded
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }))
+
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json())
@@ -48,7 +51,7 @@ app.post("/api/login", (req, res) => {
          message: "Authentication failed. Wrong password."
        });
      }
-      admin = admin[0];
+      //admin = admin[0];
       const token = jwt.sign({ data: admin._id }, SECRET, { expiresIn: 100 * 50 });
       res.json({ success: true, token: token });
     }).catch(err => {

@@ -6,7 +6,7 @@ const Auth = require('../middlewares/auth');
 const upload = require('../middlewares/upload')
 
 // Retrieve all student
-router.get('/students', Auth.verifyTokenAuth, studentController.findAll);
+router.get('/students',  studentController.findAll);
 // Create a new student
 router.post('/students', Auth.verifyTokenAuth, upload.array('myImage'),  studentController.create);
 // Retrieve a single student with id

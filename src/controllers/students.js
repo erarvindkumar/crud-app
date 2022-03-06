@@ -25,7 +25,7 @@ exports.create =  (req, res , next) => {
       
     });
   }
-  const uploadedFiles = req.files.map((x) => { return x.filename });
+  const uploadedFiles = req.files ? req.files.map((x) => { return x.filename }) : [];
   // Create a new students
   const student = new Student({
     name: req.body.name,
@@ -68,12 +68,15 @@ exports.findOne = (req, res) => {
 
 // Update a student identified by the id in the request
 exports.update = (req, res) => {
+  const uploadedFiles = req.files ? req.files.map((x) => { return x.filename }) : [];
+    
   // Find student and update it with the request body
   Student.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     email: req.body.email,
-    phone: req.body.phone
-  }, {new: true})
+    phone: req.body.phone,
+    img: uploadedFiles
+  })
   .then(student => {
     if(student.img && student.img.length > 0){
       student.img.map((file) => { 
@@ -85,9 +88,7 @@ exports.update = (req, res) => {
         message: "student not found with id " + req.params.id
       });
     }
-    const uploadedFiles = req.files.map((x) => { return x.filename });
     student.img = uploadedFiles;
-
     res.send(student);
   }).catch((err) => {
     if(err.kind === 'ObjectId') {
